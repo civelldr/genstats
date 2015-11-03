@@ -1,0 +1,20 @@
+---
+title: "q1q2"
+author: "dcivello"
+date: "November 3, 2015"
+output: html_document
+---
+
+```{r setup, eval=TRUE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r }
+x = rnorm(10)
+plot(x,pch=19,col="dodgerblue")
+```
+
+```{r }
+y = rbinom(20,size=1,prob=0.5)
+table(y)
+```
