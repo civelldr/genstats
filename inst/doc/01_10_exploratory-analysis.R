@@ -38,9 +38,9 @@ suppressPackageStartupMessages({
 
 ## ----install_packages, eval=FALSE----------------------------------------
 #  install.packages(c("devtools","gplots"))
-#  source("http://www.bioconductor.org/biocLite.R")
+source("http://www.bioconductor.org/biocLite.R")
 #  biocLite(c("Biobase","org.Hs.eg.db","AnnotationDbi"))
-#  biocLite("alyssafrazee/RSkittleBrewer")
+biocLite("alyssafrazee/RSkittleBrewer")
 
 ## ----pretty, eval=FALSE--------------------------------------------------
 #  library(RSkittleBrewer)

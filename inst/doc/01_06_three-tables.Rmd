@@ -10,7 +10,7 @@ output:
     \usepackage[utf8]{inputenc}
 ---
 
-```{r front, child="./../front.Rmd", echo=FALSE}
+```{r front, child="./front.Rmd", echo=FALSE}
 ```
 
 

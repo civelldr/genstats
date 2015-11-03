@@ -1,0 +1,27 @@
+---
+title: "week 1 notes"
+author: "civelldr"
+date: "November 2, 2015"
+output: html_document
+---
+
+power = prob of discoverying a real signal if it is there
+
+- power is typically set at 80%
+- calculations re based on made up assumptions.  guess in advance how big the signal will be
+- do a power calc before your experiment, low powered studies don't replicate
+- power is a function of the sample size, the diff between the two groups, and the variance
+
+- power ex1: n = 10 for each group, effect is 5, and sigma is 10  (i.e 18%)
+
+`power.t.test(n=10, delta=5, sd=10)`
+
+- power = 80%; effect = 5 pop SD = 10 (i.e. 64 in each group)
+
+`power.t.test(power=.8, delta=5, sd=10)`  
+
+- power = 80%; effect = 5 pop SD = 10 & one-sided (i.e. 51 in each group)
+
+` power.t.test(power=.8, delta=5, sd=10, alternative="one.sided") ` 
+
+question:  how to you relate effect size to a genomics experiment.  What does "5" mean??  what would this be, difference in two groups
