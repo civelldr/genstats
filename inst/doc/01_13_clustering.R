@@ -80,13 +80,14 @@ names(kmeans1)
 matplot(t(kmeans1$centers),col=1:3,type="l",lwd=3)
 
 ## ------------------------------------------------------------------------
+kmeans1$cluster[1:10]
 table(kmeans1$cluster)
 
 ## ------------------------------------------------------------------------
-heatmap(as.matrix(edata)[order(kmeans1$cluster),],col=colramp,Colv=NA,Rowv=NA)
+heatmap(as.matrix(edata)[order(kmeans2$cluster),],col=colramp,Colv=NA,Rowv=NA)
 
 ## ------------------------------------------------------------------------
-kmeans2 = kmeans(edata,centers=3)
+kmeans2 = kmeans(edata,centers=3, nstart = 40)
 table(kmeans1$cluster,kmeans2$cluster)
 
 ## ----session_info--------------------------------------------------------
