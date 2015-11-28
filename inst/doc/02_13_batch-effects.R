@@ -56,8 +56,8 @@ table(pheno$cancer,pheno$batch)
 
 ## ------------------------------------------------------------------------
 batch = pheno$batch
-modcombat = model.matrix(~1, data=pheno)
-modcancer = model.matrix(~cancer, data=pheno)
+modcombat = model.matrix(~1, data=pheno) # nothing but an intercept term
+modcancer = model.matrix(~cancer, data=pheno) # only the cancer term
 combat_edata = ComBat(dat=edata, batch=batch, mod=modcombat, par.prior=TRUE, prior.plots=FALSE)
 combat_fit = lm.fit(modcancer,t(combat_edata))
 hist(combat_fit$coefficients[2,],col=2,breaks=100)
@@ -70,7 +70,7 @@ abline(c(0,1),col=1,lwd=3)
 ## ------------------------------------------------------------------------
 mod = model.matrix(~cancer,data=pheno)
 mod0 = model.matrix(~1, data=pheno)
-sva1 = sva(edata,mod,mod0,n.sv=2)
+sva1 = sva(edata,mod,mod0,n.sv=2) # comp with the null model, how many surrogate batch effects
 
 ## ------------------------------------------------------------------------
 summary(lm(sva1$sv ~ pheno$batch))
@@ -83,6 +83,7 @@ fitsv = lm.fit(modsv,t(edata))
 
 ## ------------------------------------------------------------------------
 par(mfrow=c(1,2))
+# par(mfrow=c(1,1))
 plot(fitsv$coefficients[2,],combat_fit$coefficients[2,],col=2,
       xlab="SVA",ylab="Combat",xlim=c(-5,5),ylim=c(-5,5))
 abline(c(0,1),col=1,lwd=3)
@@ -91,14 +92,14 @@ plot(fitsv$coefficients[2,], fit$coefficients[2,],col=2,
 abline(c(0,1),col=1,lwd=3)
 
 ## ------------------------------------------------------------------------
-data(for.exercise)
+data(for.exercise) # is there a relationship between
 controls <- rownames(subject.support)[subject.support$cc==0]
 use <- seq(1, ncol(snps.10), 10)
 ctl.10 <- snps.10[controls,use]
 
 ## ------------------------------------------------------------------------
-xxmat <- xxt(ctl.10, correct.for.missing=FALSE)
-evv <- eigen(xxmat, symmetric=TRUE)
+xxmat <- xxt(ctl.10, correct.for.missing=FALSE) # intermediate to PCA
+evv <- eigen(xxmat, symmetric=TRUE) # eigen decomposition
 pcs <- evv$vectors[,1:5]
 
 ## ------------------------------------------------------------------------
