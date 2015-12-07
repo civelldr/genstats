@@ -12,8 +12,11 @@ data(sample.ExpressionSet, package = "Biobase")
 se = makeSummarizedExperimentFromExpressionSet(sample.ExpressionSet)
 assay <- assay(se)
 pheno <- colData(se)
+f <- rowData(se) # defunct!
 rr <- rowRanges(se)
 
+# The covariates in the Bottomly data set (experiment number, lane number) are balanced with respect to strain. The covariates 
+# in the Bodymap data set (gender, age, number of technical replicates) are not balanced with respect to tissue.
 
 #(5)
 con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bottomly_eset.RData")
@@ -31,8 +34,16 @@ bodymap_p=pData(bm)
 #(7)
 edata = exprs(bm)
 row_sums = rowSums(edata)
-index = which(rank(-row_sums) < 500 )
+
+index = which(rank(-row_sums) <= 500 ) 
+
+# or..
+# edata = edata[order(-row_sums),]
+# index = 1:500
+
 heatmap(edata[index,],Rowv=NA,Colv=NA)
+
+# yes the samples are next to each other
 
 #(8)
 con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bodymap_eset.RData")
@@ -50,12 +61,13 @@ log2_edata <- log2(edata + 1)
 rlog_edata <- rlog(edata)
 
 plot(x = (log2_edata[,1] + log2_edata[,2]) / 2, y = log2_edata[,1] - log2_edata[,2], cex = .2)
+plot(x = (rlog_edata[,1] + rlog_edata[,2]) / 2, y = rlog_edata[,1] - rlog_edata[,2], col="red", cex = 0.2)
 points(x = (rlog_edata[,1] + rlog_edata[,2]) / 2, y = rlog_edata[,1] - rlog_edata[,2], col="red", cex = 0.2)
 # rlog on it's own
 plot(x = (rlog_edata[,1] + rlog_edata[,2]) / 2, y = rlog_edata[,1] - rlog_edata[,2], col="red", cex = 0.2)
 
 #(9)
-library(dendextend)
+library(dendextend) # biocLite(c("dendextend"))
 con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
 load(file=con)
 close(con)
@@ -125,6 +137,7 @@ edata = edata[rowMeans(edata) > 100,]
 edata <- log2(edata + 1)
 dist1 = dist(t(edata))
 
+# set.seed(1235)
 kmeans1 = kmeans(t(edata),centers=2, set.seed(1235), nstart = 10, iter.max = 100)
 
 df_kmeans <- data.frame(kmeans1$cluster)

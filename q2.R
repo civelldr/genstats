@@ -20,7 +20,7 @@ pc2 <- prcomp(edata2)
 summary(pc2) # 97%
 
 edata3 <-  log2(edata + 1)
-edata_centered = edata3 - rowMeans(edata)
+edata_centered = edata3 - rowMeans(edata) # there must be something wrong with edata_centered
 pc3 <- prcomp(edata_centered)
 summary(pc3) # weird, I'm seeing 1 for this when the answer looks like it should be 0.35
 
@@ -42,15 +42,11 @@ pdata_bm=pData(bm)
 edata = as.matrix(edata)
 lm1 = lm(edata[1,] ~ as.factor(pdata_bm$num.tech.reps))
 plot(edata[1,], as.factor(pdata_bm$num.tech.reps))
-## wrong: The data are right skewed is wrong
-## wrong: The difference between 2 and 5 technical replicates is not the same as the difference between 5 and 6 technical replicates.
-# There may be different numbers of counts for different numbers of technical replicates.			
-# There is only one data point with a value of 6 so it is likely that the estimated value for that number of technical replicates is highly variable.			
-# wrong: The variable num.tech.reps is a continuous variable. 2x
+# There are very few samples with more than 2 replicates so the estimates for those values will not be very good.
 
 #Q4 
 
-lm2 <- lm(edata[1,] ~ pdata$age + pdata$gender)
+lm2 <- lm(edata[1,] ~ pdata_bm$age + pdata_bm$gender)
 summary(lm2) 
 # -23.91. This coefficient means that there is an average decrease of 23.91 in the count variable per year within each gender.
 
@@ -77,11 +73,16 @@ dim(fit$coefficients)
 # Coefficients matrix: 2 x 52580
 
 #Q6 what is "effects"
-# wrong: The model coefficients for all samples for each gene, with the values for each gene stored in the columns of the matrix 
-# wrong: The model coefficients for all samples for each gene, with the values for each gene stored in the rows of the matrix.
-# 2x The estimated fitted values for all samples for each gene, with the values for each gene stored in the columns of the matrix.			
-# The model coefficients for all samples for each gene, with the values for each gene stored in the rows of the matrix.
-# The shrunken estimated fitted values for all samples for each gene, with the values for each gene stored in the columns of the matrix.
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
+load(file=con)
+close(con)
+mp = montpick.eset
+pdata=pData(mp)
+edata=as.data.frame(exprs(mp))
+fdata = fData(mp)
+
+edata <- log2(edata + 1)
+#The estimated fitted values for all samples for each gene, with the values for each gene stored in the columns of the matrix.			
 
 #Q7
 library(limma)
@@ -104,6 +105,7 @@ fit_limma$coefficients[1000] # 2469.87
 # -27.61. The model doesn't fit well since there are two large outlying values and the rest of the values are near zero.			
 # wrong: 2469.87. The model doesn't fit well since there are two large outlying values and the rest of the values are near zero.	Inorrect	0.00	
 # wrong: -23.25. The model doesn't fit well since there are two large outlying values and the rest of the values are near zero.
+# -27.61. The model fits well since there seems to be a flat trend in the counts.
 
 #Q8
 con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bodymap_eset.RData")
@@ -115,11 +117,7 @@ pdata_bm=pData(bm)
 mod_adj <- model.matrix(~ pdata_bm$age + pdata_bm$tissue.type)
 fit_limma = lmFit(edata_eval,mod_adj)
 
-# either this: tissue.type has 18 levels but there are only 16 data points per gene, so this model can't fit a unique solution.
-# or this: Since tissue.type is a factor variable with many levels, this model has more coefficients to estimate per gene (18) than data points per gene (16)
-# wrong: Normally this model wouldn't fit well since we have more coefficients (18) than data points per gene (16). But since we have so many genes to estimate with, the model fits well.
-# The model doesn't fit well since age should be treated as a factor variable.
-# The model doesn't fit well because there are a large number of outliers for the white blood cell tissue.
+# Since tissue.type is a factor variable with many levels, this model has more coefficients to estimate per gene (18) than data points per gene (16)
 
 #Q9 
 con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
