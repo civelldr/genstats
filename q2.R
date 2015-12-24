@@ -21,6 +21,7 @@ summary(pc2) # 97%
 
 edata3 <-  log2(edata + 1)
 edata_centered = edata3 - rowMeans(edata) # there must be something wrong with edata_centered
+
 pc3 <- prcomp(edata_centered)
 summary(pc3) # weird, I'm seeing 1 for this when the answer looks like it should be 0.35
 

@@ -55,29 +55,32 @@ pcs <- evv$vectors[,1:5]
 snpdata = sub.10@.Data
 status = subject.support$cc
 snp1 = as.numeric(snpdata[,1])
+table(snp1)
 snp1[snp1==0] = NA
+table(snp1)
 glm1 = glm(status ~ snp1,family="binomial")
 tidy(glm1)
 
 ## ------------------------------------------------------------------------
-snp1_dom = (snp1 == 1)
+snp1_dom = (snp1 == 1) # dominant model
 glm1_dom = glm(status ~ snp1_dom,family="binomial")
 tidy(glm1_dom)
 tidy(glm1)
 
 ## ------------------------------------------------------------------------
-glm2 = glm(status ~ snp1 + pcs[,1:5],family="binomial")
+glm2 = glm(status ~ snp1 + pcs[,1:5],family="binomial") # adjusting for PC's
 tidy(glm2)
 
 ## ------------------------------------------------------------------------
-glm_all = snp.rhs.tests(status ~ 1,snp.data=sub.10)
+glm_all = snp.rhs.tests(status ~ 1,snp.data=sub.10) # unadjusted model
 slotNames(glm_all)
 qq.chisq(chi.squared(glm_all),df=1)
 
 ## ------------------------------------------------------------------------
-glm_all_adj = snp.rhs.tests(status ~ pcs,snp.data=sub.10)
+glm_all_adj = snp.rhs.tests(status ~ pcs,snp.data=sub.10) # fit the same model, but adj for PC's
 qq.chisq(chi.squared(glm_all_adj),df=1)
 
+# now to poisson regression models
 ## ------------------------------------------------------------------------
 con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bottomly_eset.RData")
 load(file=con)
@@ -93,17 +96,17 @@ edata = edata[rowMeans(edata) > 10, ]
 
 ## ------------------------------------------------------------------------
 glm3 = glm(edata[1, ] ~ pdata$strain,family="poisson")
-tidy(glm3)
+tidy(glm3)  # e raised to that power. addititive model on the log scale
 
 ## ------------------------------------------------------------------------
-glm.nb1 = glm.nb(edata[1, ] ~ pdata$strain)
-tidy(glm.nb1)
+glm.nb1 = glm.nb(edata[1, ] ~ pdata$strain) # negative binomial
+tidy(glm.nb1) # relate the expr data for the first gene using a nb model
 
 ## ------------------------------------------------------------------------
-de = DESeqDataSetFromMatrix(edata, pdata, ~strain)
+de = DESeqDataSetFromMatrix(edata, pdata, ~strain) # just fit an association with strain
 glm_all_nb = DESeq(de)
 result_nb = results(glm_all_nb)
-hist(result_nb$stat)
+hist(result_nb$stat) # this stat is for strain
 
 ## ----session_info--------------------------------------------------------
 devtools::session_info()
