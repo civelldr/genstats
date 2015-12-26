@@ -84,7 +84,7 @@ kmeans1$cluster[1:10]
 table(kmeans1$cluster)
 
 ## ------------------------------------------------------------------------
-heatmap(as.matrix(edata)[order(kmeans2$cluster),],col=colramp,Colv=NA,Rowv=NA)
+heatmap(as.matrix(edata)[order(kmeans1$cluster),],col=colramp,Colv=NA,Rowv=NA)
 
 ## ------------------------------------------------------------------------
 kmeans2 = kmeans(edata,centers=3, nstart = 40)
