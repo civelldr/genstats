@@ -170,7 +170,6 @@ result_nb = results(glm_all_nb)
 
 edata_log2 <- log2(edata + 1)
 mod = model.matrix(~ pdata$study)
-fit_limma = lmFit(edata_log2,mod)
 ebayes_limma = eBayes(fit_limma)
 head(ebayes_limma$t)
 
